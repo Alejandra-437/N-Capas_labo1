@@ -43,4 +43,8 @@ public class Main {
         System.out.println("3. Filtrar libros por cantidad de ventas");
         System.out.println("4. Salir");
     }
+
+    private static void nSales(){
+
+    }
 }

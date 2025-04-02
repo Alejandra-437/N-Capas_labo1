@@ -5,7 +5,6 @@ public class Venta {
     private int cantidad;
     private String fecha;
 
-    // Constructor
     public Venta(Libro libro, int cantidad, String fecha) {
         this.libro = libro;
         this.cantidad = cantidad;

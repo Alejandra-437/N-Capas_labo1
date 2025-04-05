@@ -1,4 +1,5 @@
 import models.Libro;
+import models.Venta;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,10 +19,11 @@ public class Main {
         libros.add(libro3);
         libros.add(libro4);
 
+
             try(Scanner sc = new Scanner(System.in)) {
                 int opcion;
                 do {
-                    mostrarMenu();
+                    showMenu();
                     opcion = sc.nextInt();
 
                     switch (opcion) {
@@ -48,7 +50,7 @@ public class Main {
             }
     }
 
-    private static void mostrarMenu(){
+    private static void showMenu(){
         System.out.println("1. Mostrar libros mas vendidos");
         System.out.println("2. Agregar nueva venta");
         System.out.println("3. Filtrar libros por cantidad de ventas");
@@ -72,5 +74,7 @@ public class Main {
     }
 
     //TODO: calculate best seller book
+    public static void calculateBestSeller(Venta venta){
 
+    }
 }

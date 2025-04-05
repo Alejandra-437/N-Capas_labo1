@@ -1,13 +1,21 @@
 import models.Libro;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        Libro libro1 = new Libro(1, "El Alquimista", "Paulo Coelho", 10.99f, 0);
-        Libro libro2 = new Libro(2, "Cien años de soledad", "Gabriel García Márquez", 12.50f, 0);
-        Libro libro3 = new Libro(3, "1984", "George Orwell", 15.00f, 0);
-        Libro libro4 = new Libro(4, "El Principito", "Antoine de Saint-Exupéry", 8.99f, 0);
+        Libro libro1 = new Libro(1, "El Alquimista", "Paulo Coelho", 10.99f, 150);
+        Libro libro2 = new Libro(2, "Cien años de soledad", "Gabriel García Márquez", 12.50f, 500);
+        Libro libro3 = new Libro(3, "1984", "George Orwell", 15.00f, 100);
+        Libro libro4 = new Libro(4, "El Principito", "Antoine de Saint-Exupéry", 8.99f, 450);
+
+        List<Libro> libros = new ArrayList<>();
+        libros.add(libro1);
+        libros.add(libro2);
+        libros.add(libro3);
+        libros.add(libro4);
 
         do {
             mostrarMenu();
@@ -43,4 +51,8 @@ public class Main {
         System.out.println("3. Filtrar libros por cantidad de ventas");
         System.out.println("4. Salir");
     }
+
+
+    //TODO: calculate best seller book
+
 }

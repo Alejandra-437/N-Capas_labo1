@@ -13,7 +13,7 @@ public class Venta {
 
     public void mostrarDetalles() {
         System.out.println("Detalles de la venta:");
-        // TODO: System.out.println("Libro: " + libro.getTitulo());
+        System.out.println("Libro: " + libro.getTitulo());
         System.out.println("Cantidad: " + cantidad);
         System.out.println("Fecha: " + fecha);
     }

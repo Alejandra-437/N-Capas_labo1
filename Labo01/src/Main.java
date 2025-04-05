@@ -4,6 +4,7 @@ import models.Venta;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class Main {
     public static void main(String[] args) {
@@ -18,32 +19,35 @@ public class Main {
         libros.add(libro3);
         libros.add(libro4);
 
-        do {
-            showMenu();
 
             try(Scanner sc = new Scanner(System.in)) {
-                int opcion = sc.nextInt();
+                int opcion;
+                do {
+                    showMenu();
+                    opcion = sc.nextInt();
 
-                switch (opcion) {
-                    case 1:
-                        //calculateBestSeller(venta);
-                        break;
-                    case 2:
-                        //TODO: Agregar nueva venta
-                        break;
-                    case 3:
-                        //TODO: Filtrar libros por cantidad de ventas
-                        break;
-                    case 4:
-                        System.out.println("Saliendo...");
-                        return;
-                    default:
-                        System.out.println("Opción no válida. Intente nuevamente.");
-                }
+                    switch (opcion) {
+                        case 1:
+                            //TODO: Mostrar los libros más vendidos
+                            break;
+                        case 2:
+                            //TODO: Agregar nueva venta
+                            break;
+                        case 3:
+                            nSales(sc, libros);
+                            break;
+                        case 4:
+                            System.out.println("Saliendo...");
+                            return;
+                        default:
+                            System.out.println("Opción no válida. Intente nuevamente.");
+                    }
+                }while(opcion != 4);
+
+
             } catch (Exception e) {
                 System.out.println("Error: " + e.getMessage());
             }
-        }while(true);
     }
 
     private static void showMenu(){
@@ -53,6 +57,21 @@ public class Main {
         System.out.println("4. Salir");
     }
 
+    private static void nSales(Scanner sc, List<Libro> libros){
+        System.out.println("Ingrese la cantidad de ventas a filtrar:");
+        int numberOfSales = sc.nextInt();
+        List<Libro> libroNumberSales = libros.stream()
+                .filter(libro -> libro.getVentasTotales() >= numberOfSales)
+                .collect(Collectors.toList());
+        if (libroNumberSales.isEmpty()) {
+            System.out.println("No hay libros con esa cantidad de ventas.");
+        } else {
+            System.out.println("Libros con " + numberOfSales + " o más ventas:");
+            for (Libro libro : libroNumberSales) {
+                System.out.println(libro);
+            }
+        }
+    }
 
     //TODO: calculate best seller book
     public static void calculateBestSeller(Venta venta){

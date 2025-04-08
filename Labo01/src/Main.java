@@ -1,5 +1,5 @@
-import models.Libro;
-import models.Venta;
+import models.Book;
+import models.Sale;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -7,22 +7,29 @@ import java.util.stream.Collectors;
 
 public class Main {
     public static void main(String[] args) {
-        Libro libro1 = new Libro(1, "El Alquimista", "Paulo Coelho", 10.99f, 150);
-        Libro libro2 = new Libro(2, "Cien años de soledad", "Gabriel García Márquez", 12.50f, 500);
-        Libro libro3 = new Libro(3, "1984", "George Orwell", 15.00f, 100);
-        Libro libro4 = new Libro(4, "El Principito", "Antoine de Saint-Exupéry", 8.99f, 450);
+        Book book1 = new Book(1, "El Alquimista", "Paulo Coelho", 10.99f, 150);
+        Book book2 = new Book(2, "Cien años de soledad", "Gabriel García Márquez", 12.50f, 500);
+        Book book3 = new Book(3, "1984", "George Orwell", 15.00f, 100);
+        Book book4 = new Book(4, "El Principito", "Antoine de Saint-Exupéry", 8.99f, 450);
 
-        List<Libro> libros = new ArrayList<>();
-        libros.add(libro1);
-        libros.add(libro2);
-        libros.add(libro3);
-        libros.add(libro4);
+        List<Book> books = new ArrayList<>();
+        books.add(book1);
+        books.add(book2);
+        books.add(book3);
+        books.add(book4);
 
-        List<Venta> ventas = new ArrayList<>();
-        ventas.add(new Venta(libro2, 500, "2021-01-01" ));
-        ventas.add(new Venta(libro4, 450, "2021-01-02"));
-        ventas.add(new Venta(libro1, 150, "2021-01-03"));
-        ventas.add(new Venta(libro3, 100, "2021-01-04"));
+        List<Sale> sales = new ArrayList<>();
+        List<Sale> initialSales = List.of(
+                new Sale(book2, 500, "2021-01-01"),
+                new Sale(book4, 450, "2021-01-02"),
+                new Sale(book1, 150, "2021-01-03"),
+                new Sale(book3, 100, "2021-01-04")
+        );
+
+        initialSales.forEach(sale -> {
+            sale.getBook().updateSales(sale.getQuantitySold());
+            sales.add(sale);
+        });
 
         try(Scanner sc = new Scanner(System.in)) {
                 int opcion;
@@ -32,13 +39,13 @@ public class Main {
 
                     switch (opcion) {
                         case 1:
-                            calculateBestSeller(ventas);
+                            calculateBestSeller(sales);
                             break;
                         case 2:
-                            newSale(sc, libros, ventas);
+                            newSale(sc, books, sales);
                             break;
                         case 3:
-                            nSales(sc, libros);
+                            nSales(sc, books);
                             break;
                         case 4:
                             System.out.println("Saliendo...");
@@ -61,78 +68,77 @@ public class Main {
         System.out.println("4. Salir");
     }
 
-    private static void nSales(Scanner sc, List<Libro> libros){
+    private static void nSales(Scanner sc, List<Book> books){
         System.out.println("Ingrese la cantidad de ventas a filtrar:");
         int numberOfSales = sc.nextInt();
-        List<Libro> libroNumberSales = libros.stream()
-                .filter(libro -> libro.getVentasTotales() >= numberOfSales)
+        List<Book> bookNumberSales = books.stream()
+                .filter(book -> book.getTotalSales() >= numberOfSales)
                 .collect(Collectors.toList());
-        if (libroNumberSales.isEmpty()) {
+        if (bookNumberSales.isEmpty()) {
             System.out.println("No hay libros con esa cantidad de ventas.");
         } else {
             System.out.println("Libros con " + numberOfSales + " o más ventas:");
-            for (Libro libro : libroNumberSales) {
-                System.out.println(libro);
+            for (Book book : bookNumberSales) {
+                System.out.println(book);
             }
         }
     }
 
-    //TODO: calculate best seller book
-    public static void calculateBestSeller(List<Venta> ventas){
-        if (ventas.isEmpty()){
+    public static void calculateBestSeller(List<Sale> sales){
+        if (sales.isEmpty()){
             System.out.println("No hay ventas registradas.");
         }
 
-        Map<Libro, Integer> salesPerBook = new HashMap<>();
-        for(Venta venta : ventas){
-            Libro libro  = venta.getLibro();
-            int cantidad = venta.getCantidadVendida();
-            salesPerBook.put(libro, salesPerBook.getOrDefault(libro, 0) + cantidad);
+        Map<Book, Integer> salesPerBook = new HashMap<>();
+        for(Sale sale : sales){
+            Book book = sale.getBook();
+            int salesCount = sale.getQuantitySold();
+            salesPerBook.put(book, salesPerBook.getOrDefault(book, 0) + salesCount);
         }
-        int maxVentas = Collections.max(salesPerBook.values());
-        List<Libro> librosMasVendidos = salesPerBook.entrySet().stream()
-                .filter(entry -> entry.getValue() == maxVentas)
+        int maxSales = Collections.max(salesPerBook.values());
+        List<Book> bestSellers = salesPerBook.entrySet().stream()
+                .filter(entry -> entry.getValue() == maxSales)
                 .map(Map.Entry::getKey)
                 .collect(Collectors.toList());
 
         System.out.println("Libro(s) más vendido(s):");
-        librosMasVendidos.forEach(libro ->
-                System.out.println(libro.getTitulo() + " - Ventas: " + maxVentas)
+        bestSellers.forEach(book ->
+                System.out.println(book.getTitle() + " - Ventas: " + maxSales)
         );
     }
 
-    private static void newSale(Scanner sc, List<Libro> libros, List<Venta> ventas) {
+    private static void newSale(Scanner sc, List<Book> books, List<Sale> sales) {
         System.out.println("Selecciona el libro a vender por ID: ");
-        for (Libro libro : libros) {
-            System.out.println(libro.getIdLibro() + " - " + libro.getTitulo());
+        for (Book book : books) {
+            System.out.println(book.getBookId() + " - " + book.getTitle());
         }
-        int idLibro = sc.nextInt();
-        Libro libroSeleccionado = libros.stream()
-                .filter(libro -> libro.getIdLibro() == idLibro)
+        int bookId = sc.nextInt();
+        Book selectedBook = books.stream()
+                .filter(book -> book.getBookId() == bookId)
                 .findFirst()
                 .orElse(null);
 
-        if (libroSeleccionado == null) {
+        if (selectedBook == null) {
             System.out.println("Libro no encontrado. Intenta nuevamente.");
             return;
         }
 
         System.out.println("Introduce la cantidad a vender: ");
-        int cantidad = sc.nextInt();
+        int quantity = sc.nextInt();
 
-        if (cantidad <= 0) {
+        if (quantity <= 0) {
             System.out.println("Cantidad inválida.");
             return;
         }
-        if (libroSeleccionado.reducirStock(cantidad)) {
-            String fecha = LocalDate.now().toString();
-            Venta nuevaVenta = Venta.crearVenta(libroSeleccionado, cantidad, fecha);
+        if (selectedBook.reduceStock(quantity)) {
+            String date = LocalDate.now().toString();
+            Sale newSale = Sale.createSale(selectedBook, quantity, date);
 
-            ventas.add(nuevaVenta);
-            libroSeleccionado.actualizarVentas(cantidad);
+            sales.add(newSale);
+            selectedBook.updateSales(quantity);
 
             System.out.println("¡Venta registrada exitosamente!");
-            nuevaVenta.mostrarDetalles();
+            newSale.showDetail();
         }
 
 

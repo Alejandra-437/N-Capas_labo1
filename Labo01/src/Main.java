@@ -1,6 +1,7 @@
 import models.Libro;
 import models.Venta;
 
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -34,7 +35,7 @@ public class Main {
                             calculateBestSeller(ventas);
                             break;
                         case 2:
-                            //TODO: Agregar nueva venta
+                            newSale(sc, libros, ventas);
                             break;
                         case 3:
                             nSales(sc, libros);
@@ -98,5 +99,42 @@ public class Main {
         librosMasVendidos.forEach(libro ->
                 System.out.println(libro.getTitulo() + " - Ventas: " + maxVentas)
         );
+    }
+
+    private static void newSale(Scanner sc, List<Libro> libros, List<Venta> ventas) {
+        System.out.println("Selecciona el libro a vender por ID: ");
+        for (Libro libro : libros) {
+            System.out.println(libro.getIdLibro() + " - " + libro.getTitulo());
+        }
+        int idLibro = sc.nextInt();
+        Libro libroSeleccionado = libros.stream()
+                .filter(libro -> libro.getIdLibro() == idLibro)
+                .findFirst()
+                .orElse(null);
+
+        if (libroSeleccionado == null) {
+            System.out.println("Libro no encontrado. Intenta nuevamente.");
+            return;
+        }
+
+        System.out.println("Introduce la cantidad a vender: ");
+        int cantidad = sc.nextInt();
+
+        if (cantidad <= 0) {
+            System.out.println("Cantidad inválida.");
+            return;
+        }
+        if (libroSeleccionado.reducirStock(cantidad)) {
+            String fecha = LocalDate.now().toString();
+            Venta nuevaVenta = Venta.crearVenta(libroSeleccionado, cantidad, fecha);
+
+            ventas.add(nuevaVenta);
+            libroSeleccionado.actualizarVentas(cantidad);
+
+            System.out.println("¡Venta registrada exitosamente!");
+            nuevaVenta.mostrarDetalles();
+        }
+
+
     }
 }

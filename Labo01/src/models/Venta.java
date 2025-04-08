@@ -1,5 +1,7 @@
 package models;
 
+
+
 public class Venta {
     private Libro libro;
     private int cantidad;
@@ -9,6 +11,18 @@ public class Venta {
         this.libro = libro;
         this.cantidad = cantidad;
         this.fecha = fecha;
+    }
+
+    public Libro getLibro() {
+        return libro;
+    }
+
+    public int getCantidadVendida() {
+        return cantidad;
+    }
+
+    public String getFechaVenta() {
+        return fecha;
     }
 
     public void mostrarDetalles() {

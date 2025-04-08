@@ -13,7 +13,7 @@ public class Libro {
         this.titulo = titulo;
         this.autor = autor;
         this.precio = precio;
-        this.ventasTotales = ventasTotales;
+        this.ventasTotales = 0;
     }
     //Getters & Setters
     public int getIdLibro() {

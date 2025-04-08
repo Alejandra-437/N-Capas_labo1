@@ -1,9 +1,7 @@
 import models.Libro;
 import models.Venta;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Main {
@@ -19,8 +17,13 @@ public class Main {
         libros.add(libro3);
         libros.add(libro4);
 
+        List<Venta> ventas = new ArrayList<>();
+        ventas.add(new Venta(libro2, 500, "2021-01-01" ));
+        ventas.add(new Venta(libro4, 450, "2021-01-02"));
+        ventas.add(new Venta(libro1, 150, "2021-01-03"));
+        ventas.add(new Venta(libro3, 100, "2021-01-04"));
 
-            try(Scanner sc = new Scanner(System.in)) {
+        try(Scanner sc = new Scanner(System.in)) {
                 int opcion;
                 do {
                     showMenu();
@@ -28,7 +31,7 @@ public class Main {
 
                     switch (opcion) {
                         case 1:
-                            //TODO: Mostrar los libros más vendidos
+                            calculateBestSeller(ventas);
                             break;
                         case 2:
                             //TODO: Agregar nueva venta
@@ -74,7 +77,26 @@ public class Main {
     }
 
     //TODO: calculate best seller book
-    public static void calculateBestSeller(Venta venta){
+    public static void calculateBestSeller(List<Venta> ventas){
+        if (ventas.isEmpty()){
+            System.out.println("No hay ventas registradas.");
+        }
 
+        Map<Libro, Integer> salesPerBook = new HashMap<>();
+        for(Venta venta : ventas){
+            Libro libro  = venta.getLibro();
+            int cantidad = venta.getCantidadVendida();
+            salesPerBook.put(libro, salesPerBook.getOrDefault(libro, 0) + cantidad);
+        }
+        int maxVentas = Collections.max(salesPerBook.values());
+        List<Libro> librosMasVendidos = salesPerBook.entrySet().stream()
+                .filter(entry -> entry.getValue() == maxVentas)
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
+
+        System.out.println("Libro(s) más vendido(s):");
+        librosMasVendidos.forEach(libro ->
+                System.out.println(libro.getTitulo() + " - Ventas: " + maxVentas)
+        );
     }
 }

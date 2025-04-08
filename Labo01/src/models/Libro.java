@@ -5,14 +5,16 @@ public class Libro {
     String titulo;
     String autor;
     float precio;
+    private int stockDisponible;
     float ventasTotales;
 
     //constructor
-    public Libro(int idLibro, String titulo, String autor, float precio, float ventasTotales) {
+    public Libro(int idLibro, String titulo, String autor, float precio, int stockDisponible) {
         this.idLibro = idLibro;
         this.titulo = titulo;
         this.autor = autor;
         this.precio = precio;
+        this.stockDisponible = stockDisponible;
         this.ventasTotales = 0;
     }
     //Getters & Setters
@@ -45,6 +47,19 @@ public class Libro {
     }
     public void setVentasTotales(float ventasTotales) {
         this.ventasTotales = ventasTotales;
+    }
+    public void actualizarVentas(int unidades) {
+        this.ventasTotales += unidades; // Incrementa el total de ventas
+    }
+
+    public boolean reducirStock(int unidades) {
+        if (this.stockDisponible >= unidades) {
+            this.stockDisponible -= unidades; // Reduce el stock si es válido
+            return true;
+        } else {
+            System.out.println("Stock insuficiente para " + titulo);
+            return false;
+        }
     }
 
     @Override
